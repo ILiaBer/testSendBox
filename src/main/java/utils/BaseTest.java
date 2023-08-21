@@ -1,6 +1,7 @@
 package utils;
 
 import com.google.common.collect.Lists;
+import lombok.AllArgsConstructor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.ITestResult;
@@ -11,10 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TestBase {
+@AllArgsConstructor
+public class BaseTest {
 
     public static final ThreadLocal<ITestResult> testResult = new ThreadLocal<>();
     public static ConcurrentHashMap<ITestResult, List<Runnable>> finishMap = new ConcurrentHashMap<>();
+
+
+    public static BaseRouter baseRouter;
+
+    public BaseTest() {
+        baseRouter = new BaseRouter();
+    }
 
     @BeforeMethod
     protected void setUp(ITestResult result) {
