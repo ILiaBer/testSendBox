@@ -6,19 +6,12 @@ import org.openqa.selenium.By;
 public interface Locators {
 
     interface SideBarMenu {
-        By ELEMENTS = getDivByText(MenuItems.ELEMENTS.getName());
-        By FORMS = getDivByText(MenuItems.FORMS.getName());
-        By ALERTS_FRAME_WINDOWS = getDivByText(MenuItems.ALERTS_FRAME_WINDOWS.getName());
-        By WIDGETS = getDivByText(MenuItems.WIDGETS.name);
-        By INTERACTIONS = getDivByText(MenuItems.INTERACTIONS.getName());
-        By BOOK_STORE_APPLICATION = getDivByText(MenuItems.BOOK_STORE_APPLICATION.getName());
     }
 
-    interface RegistrationPage {
-        By NAME = By.cssSelector("#userName");
-        By EMAIL = By.cssSelector("#userEmail");
-        By CURRENT_ADDRESS = By.cssSelector("#currentAddress");
-        By PERMANENT_ADDRESS = By.cssSelector("#permanentAddress");
+    interface AuthorizationPage {
+        By USER_LOGIN = By.cssSelector("#user-name");
+        By PASSWORD = By.cssSelector("#password");
+        By LOGIN = By.cssSelector("#login-button");
     }
 
     static By getDivByText(String attribute) {

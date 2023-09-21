@@ -1,7 +1,7 @@
 package utils;
 
 import pages.MainMenuPage;
-import pages.RegistrationPage;
+import pages.AuthorizationPage;
 import steps.RegistrationPageSteps;
 
 import static com.codeborne.selenide.Selenide.page;
@@ -9,7 +9,7 @@ import static com.codeborne.selenide.Selenide.page;
 public class BaseRouter {
 
     public MainMenuPage mainMenuPage() {return page(MainMenuPage.class);}
-    public RegistrationPage registrationPage() {return page(RegistrationPage.class);}
+    public AuthorizationPage authorizationPage() {return page(AuthorizationPage.class);}
 
     public RegistrationPageSteps registrationPageSteps() {return page(RegistrationPageSteps.class);}
 }
