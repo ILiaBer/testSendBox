@@ -14,6 +14,10 @@ public interface Locators {
         By LOGIN = By.cssSelector("#login-button");
     }
 
+    interface MainPage {
+        By TABLE = By.cssSelector("#inventory_container");
+    }
+
     static By getDivByText(String attribute) {
         return By.xpath("//div[contains(text(),'" + attribute + "')]");
     }

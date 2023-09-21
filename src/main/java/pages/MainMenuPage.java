@@ -1,11 +1,9 @@
 package pages;
 
-import widgets.*;
-
-import static utils.Locators.SideBarMenu.*;
+import utils.Locators;
+import widgets.MenuItem;
 
 public class MainMenuPage {
 
-//    public MenuItem elements = new MenuItem(ELEMENTS);
-//    public MenuItem forms = new MenuItem(FORMS);
+    public MenuItem table = new MenuItem(Locators.MainPage.TABLE);
 }

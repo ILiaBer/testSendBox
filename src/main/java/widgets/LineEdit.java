@@ -7,7 +7,6 @@ import utils.BaseRouter;
 
 import static com.codeborne.selenide.Selenide.$;
 
-@CommonsLog
 public class LineEdit extends BaseRouter {
 
     public LineEdit(By locator) {

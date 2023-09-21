@@ -9,7 +9,6 @@ import utils.BaseRouter;
 import static com.codeborne.selenide.Selenide.$;
 
 @AllArgsConstructor
-@CommonsLog
 public class Button extends BaseRouter {
     private By locator;
 

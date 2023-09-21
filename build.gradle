@@ -12,15 +12,15 @@ repositories {
 dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+    implementation('io.github.sskorol:test-data-supplier:1.9.5')
+    implementation('com.github.javafaker:javafaker:1.0.2') {exclude group: 'org.yaml', module: 'snakeyaml'}
     implementation(
-            'org.yaml:snakeyaml:2.0',
             'org.testng:testng:7.8.0',
             'org.seleniumhq.selenium:selenium-java:4.11.0',
             'com.codeborne:selenide:6.15.0',
             'org.projectlombok:lombok:1.18.24',
-            'log4j:log4j:1.2.17',
-            'io.github.sskorol:test-data-supplier:2.2.0',
-            'com.github.javafaker:javafaker:1.0.2'
+            'log4j:log4j:1.2.17'
+//            'com.github.javafaker:javafaker:1.0.2'
     )
     testImplementation 'org.testng:testng:7.4.0'
     testRuntimeOnly 'org.testng:testng:7.4.0'

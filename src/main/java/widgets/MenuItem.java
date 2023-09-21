@@ -1,13 +1,11 @@
 package widgets;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.apachecommons.CommonsLog;
+import com.codeborne.selenide.Condition;
 import org.openqa.selenium.By;
 import utils.BaseRouter;
 
 import static com.codeborne.selenide.Selenide.$;
 
-@CommonsLog
 public class MenuItem extends BaseRouter {
     private By locator;
 
@@ -15,9 +13,8 @@ public class MenuItem extends BaseRouter {
         this.locator=locator;
     }
 
-    public BaseRouter click() {
-        $(locator).scrollTo();
-        $(locator).click();
+    public BaseRouter visible() {
+        $(locator).shouldBe(Condition.visible);
         return this;
     }
 }

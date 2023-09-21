@@ -3,6 +3,7 @@ package data.dataClasses;
 import data.enums.UserLogins;
 import data.models.BaseTestModel;
 import data.models.User;
+import io.github.sskorol.core.DataSupplier;
 
 import java.util.stream.Stream;
 
@@ -20,7 +21,7 @@ public class Users {
                 .build();
     }
 
-//    @DataSupplier(name = "positiveAuthorization")
+    @DataSupplier(name = "positiveAuthorization")
     public Stream<BaseTestModel<User>> positiveAuthorization() {
         return Stream.of(
                 generateUserWithTestInfo("Creating firmware with small file", generateUser(UserLogins.STANDARD_USER.getName(), defaultPass)),

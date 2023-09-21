@@ -11,7 +11,7 @@ public class AuthorizationTests extends BaseTest {
         baseRouter
                 .authorizationPage().userLogin.fill(user.getBaseModel().getLogin())
                 .authorizationPage().password.fill(user.getBaseModel().getPassword())
-                .authorizationPage().login.click();
+                .authorizationPage().login.click()
+                .mainMenuPage().table.visible();
     }
-
 }
