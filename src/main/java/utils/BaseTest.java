@@ -2,13 +2,13 @@ package utils;
 
 import com.codeborne.selenide.Configuration;
 import com.google.common.collect.Lists;
-import lombok.AllArgsConstructor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import data.models.User;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Step;
+import lombok.SneakyThrows;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import pages.MainMenuPage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +28,15 @@ public class BaseTest {
         baseRouter = new BaseRouter();
     }
 
+    @Step("Login")
+    protected void login(User user){
+        baseRouter
+                .authorizationPage().userLogin.fill(user.getLogin())
+                .authorizationPage().password.fill(user.getPassword())
+                .authorizationPage().login.click()
+                .mainMenuPage().table.visible();
+    }
+
     @BeforeMethod
     protected void setUp(ITestResult result) {
         testResult.set(result);
@@ -43,5 +52,27 @@ public class BaseTest {
             runnable.run();
         finishMap.remove(testResult.get());
         testResult.remove();
+    }
+
+    @SneakyThrows
+    @Step("Pending count milliseconds")
+    public static void pending(Integer countMilliseconds){
+        Thread.sleep(countMilliseconds);
+    }
+
+    public void Arrange(Allure.ThrowableRunnableVoid runnableVoid){
+        Allure.step("Arrange", runnableVoid);
+    }
+
+    public void Act(Allure.ThrowableRunnableVoid runnableVoid){
+        Allure.step("Act", runnableVoid);
+    }
+
+    public void Assert(Allure.ThrowableRunnableVoid runnableVoid){
+        Allure.step("Assert", runnableVoid);
+    }
+
+    public void Cleanup(Allure.ThrowableRunnableVoid runnableVoid){
+        Allure.step("Cleanup", runnableVoid);
     }
 }

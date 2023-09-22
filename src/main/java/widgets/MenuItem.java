@@ -17,4 +17,9 @@ public class MenuItem extends BaseRouter {
         $(locator).shouldBe(Condition.visible);
         return this;
     }
+
+    public BaseRouter notVisible() {
+        $(locator).shouldNotBe(Condition.visible);
+        return this;
+    }
 }
