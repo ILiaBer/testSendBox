@@ -15,8 +15,9 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.codeborne.selenide.Selenide.open;
+import static data.dataClasses.Users.standardUser;
 
-public class BaseTest {
+public class BaseTest extends BaseRouter{
 
     public static final ThreadLocal<ITestResult> testResult = new ThreadLocal<>();
     public static ConcurrentHashMap<ITestResult, List<Runnable>> finishMap = new ConcurrentHashMap<>();
@@ -29,12 +30,17 @@ public class BaseTest {
     }
 
     @Step("Login")
-    protected void login(User user){
+    protected void login(User user) {
         baseRouter
                 .authorizationPage().userLogin.fill(user.getLogin())
                 .authorizationPage().password.fill(user.getPassword())
                 .authorizationPage().login.click()
                 .mainMenuPage().table.visible();
+    }
+
+    @Step("Login")
+    protected void login() {
+        login(standardUser);
     }
 
     @BeforeMethod
@@ -47,7 +53,7 @@ public class BaseTest {
     }
 
     @AfterMethod(alwaysRun = true)
-    protected void finishMethod(){
+    protected void finishMethod() {
         for (Runnable runnable : Lists.reverse(finishMap.get(testResult.get())))
             runnable.run();
         finishMap.remove(testResult.get());
@@ -56,23 +62,23 @@ public class BaseTest {
 
     @SneakyThrows
     @Step("Pending count milliseconds")
-    public static void pending(Integer countMilliseconds){
+    public static void pending(Integer countMilliseconds) {
         Thread.sleep(countMilliseconds);
     }
 
-    public void Arrange(Allure.ThrowableRunnableVoid runnableVoid){
+    public void Arrange(Allure.ThrowableRunnableVoid runnableVoid) {
         Allure.step("Arrange", runnableVoid);
     }
 
-    public void Act(Allure.ThrowableRunnableVoid runnableVoid){
+    public void Act(Allure.ThrowableRunnableVoid runnableVoid) {
         Allure.step("Act", runnableVoid);
     }
 
-    public void Assert(Allure.ThrowableRunnableVoid runnableVoid){
+    public void Assert(Allure.ThrowableRunnableVoid runnableVoid) {
         Allure.step("Assert", runnableVoid);
     }
 
-    public void Cleanup(Allure.ThrowableRunnableVoid runnableVoid){
+    public void Cleanup(Allure.ThrowableRunnableVoid runnableVoid) {
         Allure.step("Cleanup", runnableVoid);
     }
 }

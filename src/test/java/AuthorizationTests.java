@@ -6,7 +6,6 @@ import org.testng.annotations.Test;
 import utils.BaseTest;
 
 import static data.dataClasses.Users.generateUser;
-import static data.dataClasses.Users.standardUser;
 import static utils.Tools.getRandomEnumExceptOne;
 
 public class AuthorizationTests extends BaseTest {
@@ -41,5 +40,7 @@ public class AuthorizationTests extends BaseTest {
     void logoutUser() {
         UserLogins login = getRandomEnumExceptOne(UserLogins.LOCKED_OUT_USER);
         login(generateUser(login.getName(), Users.defaultPass));
+        mainPageSteps().logout();
+        baseRouter.authorizationPage().container.visible();
     }
 }

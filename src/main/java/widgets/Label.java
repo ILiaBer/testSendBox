@@ -1,25 +1,18 @@
 package widgets;
 
 import com.codeborne.selenide.Condition;
+import lombok.AllArgsConstructor;
 import org.openqa.selenium.By;
 import utils.BaseRouter;
 
 import static com.codeborne.selenide.Selenide.$;
 
-public class MenuItem extends BaseRouter {
+@AllArgsConstructor
+public class Label extends BaseRouter {
     private By locator;
 
-    public MenuItem(By locator){
-        this.locator=locator;
-    }
-
-    public BaseRouter visible() {
+    public BaseRouter visible(){
         $(locator).shouldBe(Condition.visible);
-        return this;
-    }
-
-    public BaseRouter notVisible() {
-        $(locator).shouldNotBe(Condition.visible);
         return this;
     }
 }

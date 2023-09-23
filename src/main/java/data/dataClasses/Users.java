@@ -29,8 +29,8 @@ public class Users {
     @DataSupplier(name = "positiveAuthorization")
     public Stream<BaseTestModel<User>> positiveAuthorization() {
         return Stream.of(
-                generateUserWithTestInfo("Creating firmware with small file", generateUser(UserLogins.STANDARD_USER.getName(), defaultPass)),
-                generateUserWithTestInfo("Creating firmware with big file", generateUser(UserLogins.PROBLEM_USER.getName(), defaultPass)),
-                generateUserWithTestInfo("Creating firmware with big file", generateUser(UserLogins.PERFORMANCE_GLITCH_USER.getName(), defaultPass)));
+                generateUserWithTestInfo("Standard user can be authorize", generateUser(UserLogins.STANDARD_USER.getName(), defaultPass)),
+                generateUserWithTestInfo("Problem user can be authorize", generateUser(UserLogins.PROBLEM_USER.getName(), defaultPass)),
+                generateUserWithTestInfo("Performance glitch user can be authorize", generateUser(UserLogins.PERFORMANCE_GLITCH_USER.getName(), defaultPass)));
     }
 }

@@ -2,7 +2,6 @@ package widgets;
 
 
 import lombok.AllArgsConstructor;
-import lombok.extern.apachecommons.CommonsLog;
 import org.openqa.selenium.By;
 import utils.BaseRouter;
 
