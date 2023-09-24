@@ -25,6 +25,13 @@ public class BaseTest extends BaseRouter{
 
     public static BaseRouter baseRouter;
 
+    public final static String pathToSaucePullover = "src/main/resources/SaucePullover.jpg";
+    public final static String pathToSauceBackpack = "src/main/resources/SauceBackpack.jpg";
+    public final static String pathToRedTatt = "src/main/resources/RedTatt.jpg";
+    public final static String pathToRedOnesie = "src/main/resources/RedOnesie.jpg";
+    public final static String pathToBoltShirt = "src/main/resources/BoltShirt.jpg";
+    public final static String pathToBikeLight = "src/main/resources/BikeLight.jpg";
+
     public BaseTest() {
         baseRouter = new BaseRouter();
     }

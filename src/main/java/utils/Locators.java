@@ -20,11 +20,11 @@ public interface Locators {
         By RESET_DATA = By.cssSelector("#reset_sidebar_link");
 
         By INVENTORY_ITEM = By.cssSelector(".inventory_item");
-        By PREVIEW_IMG = By.xpath("//img[contains(@class, 'inventory_item_img')]");
         By HEADER = By.xpath("//div[contains(@class, 'inventory_item_name')]");
         By DESCRIPTION = By.xpath("//div[contains(@class, 'inventory_item_description')]//div[contains(@class, 'inventory_item_desc')]");
         By PRICE = By.xpath("//div[contains(@class, 'inventory_item_price')]");
         By ADD_TO_CART = By.xpath("//button[contains(text(), 'Add to cart')]");
+        By REMOVE_FROM_CART = By.xpath("//button[contains(text(), 'Remove')]");
 
 
 

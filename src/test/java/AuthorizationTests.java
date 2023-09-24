@@ -27,10 +27,10 @@ public class AuthorizationTests extends BaseTest {
     void lockedUserCantBeRegistered() {
         User user = generateUser(UserLogins.LOCKED_OUT_USER.getName(), Users.defaultPass);
         Act(() -> {
-        baseRouter
-                .authorizationPage().userLogin.fill(user.getLogin())
-                .authorizationPage().password.fill(user.getPassword())
-                .authorizationPage().login.click();
+            baseRouter
+                    .authorizationPage().userLogin.fill(user.getLogin())
+                    .authorizationPage().password.fill(user.getPassword())
+                    .authorizationPage().login.click();
         });
         baseRouter
                 .mainMenuPage().table.notVisible();
@@ -38,9 +38,15 @@ public class AuthorizationTests extends BaseTest {
 
     @Test(description = "Logout user")
     void logoutUser() {
-        UserLogins login = getRandomEnumExceptOne(UserLogins.LOCKED_OUT_USER);
-        login(generateUser(login.getName(), Users.defaultPass));
-        mainPageSteps().logout();
-        baseRouter.authorizationPage().container.visible();
+        Arrange(() -> {
+            UserLogins login = getRandomEnumExceptOne(UserLogins.LOCKED_OUT_USER);
+            login(generateUser(login.getName(), Users.defaultPass));
+        });
+        Act(() -> {
+            mainPageSteps().logout();
+        });
+        Assert(() -> {
+            baseRouter.authorizationPage().container.visible();
+        });
     }
 }
