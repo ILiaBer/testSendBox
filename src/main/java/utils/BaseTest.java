@@ -9,6 +9,7 @@ import lombok.SneakyThrows;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import steps.DeleteAll;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.codeborne.selenide.Selenide.open;
 import static data.dataClasses.Users.standardUser;
 
-public class BaseTest extends BaseRouter{
+public class BaseTest extends BaseRouter {
 
     public static final ThreadLocal<ITestResult> testResult = new ThreadLocal<>();
     public static ConcurrentHashMap<ITestResult, List<Runnable>> finishMap = new ConcurrentHashMap<>();
@@ -43,6 +44,15 @@ public class BaseTest extends BaseRouter{
                 .authorizationPage().password.fill(user.getPassword())
                 .authorizationPage().login.click()
                 .mainMenuPage().table.visible();
+    }
+
+    @Step("Reset data after test")
+    protected void resetDataAfterTest() {
+        DeleteAll.putOnDeleting(() -> {
+            baseRouter
+                    .mainMenuPage().menuBtn.click()
+                    .mainMenuPage().sidebar.resetData();
+        });
     }
 
     @Step("Login")

@@ -15,4 +15,9 @@ public class Label extends BaseRouter {
         $(locator).shouldBe(Condition.visible);
         return this;
     }
+
+    public BaseRouter checkText(String text){
+        $(locator).shouldBe(Condition.text(text));
+        return this;
+    }
 }
