@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class InventoryItem extends DataModel {
 
-    private String header;
-    private String description;
-    private Double price;
-    private String imgPath;
+    public String header;
+    public String description;
+    public Double price;
+    public String imgPath;
 }

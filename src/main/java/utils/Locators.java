@@ -36,6 +36,8 @@ public interface Locators {
         By TABLE = By.xpath("//div[contains(@class,'cart_list')]");
         By TOTAL = By.xpath("//div[contains(@class,'summary_total_label')]");
         By TAX = By.xpath("//div[contains(@class,'summary_tax_label')]");
+        By FINISH = By.cssSelector("#finish");
+        By ORDER_COMPLETE = By.xpath("//*[contains(text(),'Thank you for your order!')]");
 
     }
 

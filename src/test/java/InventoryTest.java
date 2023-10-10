@@ -1,15 +1,21 @@
-import com.github.javafaker.Faker;
 import data.dataClasses.InventoryItems;
+import data.models.Customer;
 import data.models.InventoryItem;
 import org.testng.annotations.Test;
 import utils.BaseTest;
 import utils.Tools;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static data.models.Customer.generateCustomer;
+
 public class InventoryTest extends BaseTest {
 
     @Test(description = "Item can be added to card")
     void itemCanBeAddedToCard() {
-        resetDataAfterTest();
+        Cleanup(this::resetDataAfterTest);
         InventoryItem item = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
         Arrange(this::login);
         Act(() -> {
@@ -40,22 +46,67 @@ public class InventoryTest extends BaseTest {
 
     @Test(description = "Item can be ordered")
     void itemCanBeOrdered() {
-        Faker faker = new Faker();
+        Customer customer = generateCustomer();
         InventoryItem item = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
         Arrange(this::login);
         Act(() -> {
+            inventorySteps().proceedToPayment(item, customer);
+            baseRouter.checkoutOverviewPage().finish.click();
+        });
+        Assert(() -> {
             baseRouter
-                    .mainMenuPage().inventoryItem.addItemToCart(item)
-                    .mainMenuPage().cardBtn.click()
-                    .cardPage().checkout.click()
-                    .cardPage().firstName.fill(faker.name().firstName())
-                    .cardPage().lastName.fill(faker.name().lastName())
-                    .cardPage().postalCode.fill(String.valueOf(faker.number().randomNumber()))
-                    .cardPage().continueBtn.click()
-                    .checkoutOverviewPage().total.checkText(Tools.calculateTotal(item.getPrice()).toString())
-                    .checkoutOverviewPage().tax.checkText(Tools.calculateTax(item.getPrice()).toString());
-
-
+                    .checkoutOverviewPage().orderComplete.visible();
         });
     }
+
+    @Test(description = "Tax on one product")
+    void taxOnOneProduct() {
+        Cleanup(this::resetDataAfterTest);
+        Customer customer = generateCustomer();
+        InventoryItem item = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
+        Arrange(this::login);
+        Act(() -> {
+            inventorySteps().proceedToPayment(item, customer);
+        });
+        Assert(() -> {
+            baseRouter
+                    .checkoutOverviewPage().tax.checkText(Tools.calculateTax(item.getPrice()).toString());
+        });
+    }
+
+    @Test(description = "Tax on multiple product")
+    void taxOnMultipleProduct() {
+        Cleanup(this::resetDataAfterTest);
+        Customer customer = generateCustomer();
+        InventoryItem firstItem = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
+        InventoryItem secondItem = (InventoryItem) Tools.getRandomClassObjExceptList(InventoryItems.class, List.of(firstItem));
+        InventoryItem thirdItem = (InventoryItem) Tools.getRandomClassObjExceptList(InventoryItems.class, List.of(firstItem, secondItem));
+
+
+
+        Arrange(this::login);
+        Act(() -> {
+            inventorySteps().proceedToPayment(List.of(firstItem,secondItem, thirdItem), customer);
+        });
+        Assert(() -> {
+//            baseRouter
+//                    .checkoutOverviewPage().tax.checkText(Tools.calculateTax(item.getPrice()).toString());
+        });
+    }
+
+    @Test(description = "Total on one product")
+    void totalOnOneProduct() {
+        Cleanup(this::resetDataAfterTest);
+        Customer customer = generateCustomer();
+        InventoryItem item = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
+        Arrange(this::login);
+        Act(() -> {
+            inventorySteps().proceedToPayment(item, customer);
+        });
+        Assert(() -> {
+            baseRouter
+                    .checkoutOverviewPage().total.checkText(Tools.calculateTotal(item.getPrice()).toString());
+        });
+    }
+
 }

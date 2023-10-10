@@ -1,14 +1,17 @@
 package utils;
 
+import data.models.InventoryItem;
 import lombok.SneakyThrows;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -48,6 +51,14 @@ public class Tools {
         int x = random.nextInt(classEx.getDeclaredFields().length);
         return classEx.getDeclaredFields()[x].get(0);
     }
+
+    public static Object getRandomClassObjExceptList(Class<?> classEx, List<Object> exceptedList) {
+        Object randomElement = getRandomClassObj(classEx);
+        while(exceptedList.contains(randomElement))
+            randomElement = getRandomClassObj(classEx);
+        return randomElement;
+    }
+
 
     public static Double calculateTax(Double price) {
         String formattedPrice = new DecimalFormat("#.00").format(price * 0.08);

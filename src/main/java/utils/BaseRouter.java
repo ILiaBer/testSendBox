@@ -4,6 +4,7 @@ import pages.AuthorizationPage;
 import pages.CardPage;
 import pages.CheckoutOverviewPage;
 import pages.MainMenuPage;
+import steps.InventorySteps;
 import steps.MainPageSteps;
 
 import static com.codeborne.selenide.Selenide.page;
@@ -17,4 +18,5 @@ public class BaseRouter {
 
 
     public static MainPageSteps mainPageSteps() {return page(MainPageSteps.class);}
+    public static InventorySteps inventorySteps() {return page(InventorySteps.class);}
 }
