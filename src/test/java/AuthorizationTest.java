@@ -8,7 +8,7 @@ import utils.BaseTest;
 import static data.dataClasses.Users.generateUser;
 import static utils.Tools.getRandomEnumExceptOne;
 
-public class AuthorizationTests extends BaseTest {
+public class AuthorizationTest extends BaseTest {
 
     @Test(description = "User can be registered", dataProviderClass = Users.class, dataProvider = "positiveAuthorization")
     void userCanBeRegistered(BaseTestModel<User> user) {
