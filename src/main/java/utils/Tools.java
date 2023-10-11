@@ -59,15 +59,34 @@ public class Tools {
         return randomElement;
     }
 
-
     public static Double calculateTax(Double price) {
         String formattedPrice = new DecimalFormat("#.00").format(price * 0.08);
         formattedPrice = formattedPrice.replace(",", ".");
         return Double.parseDouble(formattedPrice);
     }
 
+    public static Double calculateTax(List<Double> prices) {
+        Double total = 0.0;
+        for (Double price : prices) {
+            total += price;
+        }
+        String formattedPrice = new DecimalFormat("#.00").format(total * 0.08);
+        formattedPrice = formattedPrice.replace(",", ".");
+        return Double.parseDouble(formattedPrice);
+    }
+
     public static Double calculateTotal(Double price) {
         String formattedPrice = new DecimalFormat("#.00").format(price * 1.08);
+        formattedPrice = formattedPrice.replace(",", ".");
+        return Double.parseDouble(formattedPrice);
+    }
+
+    public static Double calculateTotal(List<Double> prices) {
+        Double total = 0.0;
+        for (Double price : prices) {
+            total += price;
+        }
+        String formattedPrice = new DecimalFormat("#.00").format(total * 1.08);
         formattedPrice = formattedPrice.replace(",", ".");
         return Double.parseDouble(formattedPrice);
     }

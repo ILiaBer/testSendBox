@@ -78,19 +78,21 @@ public class InventoryTest extends BaseTest {
     void taxOnMultipleProduct() {
         Cleanup(this::resetDataAfterTest);
         Customer customer = generateCustomer();
+        List list = new ArrayList();
         InventoryItem firstItem = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
-        InventoryItem secondItem = (InventoryItem) Tools.getRandomClassObjExceptList(InventoryItems.class, List.of(firstItem));
-        InventoryItem thirdItem = (InventoryItem) Tools.getRandomClassObjExceptList(InventoryItems.class, List.of(firstItem, secondItem));
-
-
-
+        list.add(firstItem);
+        InventoryItem secondItem = (InventoryItem) Tools.getRandomClassObjExceptList(InventoryItems.class, list);
+        list.add(secondItem);
+        InventoryItem thirdItem = (InventoryItem) Tools.getRandomClassObjExceptList(InventoryItems.class, list);
+        list.add(thirdItem);
         Arrange(this::login);
         Act(() -> {
-            inventorySteps().proceedToPayment(List.of(firstItem,secondItem, thirdItem), customer);
+            inventorySteps().proceedToPayment(list, customer);
         });
         Assert(() -> {
-//            baseRouter
-//                    .checkoutOverviewPage().tax.checkText(Tools.calculateTax(item.getPrice()).toString());
+            baseRouter
+                    .checkoutOverviewPage().tax.checkText(Tools.calculateTax(List.of(
+                            firstItem.getPrice(), secondItem.getPrice(), thirdItem.getPrice())).toString());
         });
     }
 
@@ -109,4 +111,25 @@ public class InventoryTest extends BaseTest {
         });
     }
 
+    @Test(description = "Total on multiple product")
+    void totalOnMultipleProduct() {
+        Cleanup(this::resetDataAfterTest);
+        Customer customer = generateCustomer();
+        List list = new ArrayList();
+        InventoryItem firstItem = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
+        list.add(firstItem);
+        InventoryItem secondItem = (InventoryItem) Tools.getRandomClassObjExceptList(InventoryItems.class, list);
+        list.add(secondItem);
+        InventoryItem thirdItem = (InventoryItem) Tools.getRandomClassObjExceptList(InventoryItems.class, list);
+        list.add(thirdItem);
+        Arrange(this::login);
+        Act(() -> {
+            inventorySteps().proceedToPayment(list, customer);
+        });
+        Assert(() -> {
+            baseRouter
+                    .checkoutOverviewPage().total.checkText(Tools.calculateTotal(List.of(
+                            firstItem.getPrice(), secondItem.getPrice(), thirdItem.getPrice())).toString());
+        });
+    }
 }
