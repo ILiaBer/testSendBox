@@ -1,6 +1,5 @@
 package utils;
 
-import data.enums.MenuItems;
 import org.openqa.selenium.By;
 
 public interface Locators {
