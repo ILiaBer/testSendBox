@@ -1,10 +1,12 @@
 package utils;
 
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.logevents.SelenideLogger;
 import com.google.common.collect.Lists;
 import data.models.User;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
+import io.qameta.allure.selenide.AllureSelenide;
 import lombok.SneakyThrows;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
@@ -62,6 +64,7 @@ public class BaseTest extends BaseRouter {
 
     @BeforeMethod
     protected void setUp(ITestResult result) {
+        SelenideLogger.addListener("allure", new AllureSelenide());
         testResult.set(result);
         finishMap.put(result, new ArrayList<>());
         Configuration.browserSize = "1920x1070";
