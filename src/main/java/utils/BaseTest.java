@@ -8,11 +8,15 @@ import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.qameta.allure.selenide.AllureSelenide;
 import lombok.SneakyThrows;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import steps.DeleteAll;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,6 +32,10 @@ public class BaseTest extends BaseRouter {
 
     public static BaseRouter baseRouter;
 
+    public RemoteWebDriver driver;
+
+    protected static final String SELENIUM_URL = "http://127.0.0.1:4444/wd/hub";
+
     public final static String pathToSaucePullover = "src/main/resources/SaucePullover.jpg";
     public final static String pathToSauceBackpack = "src/main/resources/SauceBackpack.jpg";
     public final static String pathToRedTatt = "src/main/resources/RedTatt.jpg";
@@ -37,6 +45,14 @@ public class BaseTest extends BaseRouter {
 
     public BaseTest() {
         baseRouter = new BaseRouter();
+    }
+
+    @BeforeTest
+    public void start() throws Exception{
+        this.driver = new RemoteWebDriver(
+                new URL(SELENIUM_URL),
+                new ChromeOptions()
+        );
     }
 
     @Step("Login")
