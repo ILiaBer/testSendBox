@@ -16,6 +16,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import steps.DeleteAll;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +48,47 @@ public class BaseTest extends BaseRouter {
         baseRouter = new BaseRouter();
     }
 
-    @BeforeTest
-    public void start() throws Exception{
-        this.driver = new RemoteWebDriver(
-                new URL(SELENIUM_URL),
-                new ChromeOptions()
-        );
+    //    @BeforeTest
+//    public void start() throws Exception{
+//        this.driver = new RemoteWebDriver(
+//                new URL(SELENIUM_URL),
+//                new ChromeOptions()
+//        );
+//    }
+    @BeforeMethod
+    protected void setUp1(ITestResult result) {
+        SelenideLogger.addListener("allure", new AllureSelenide());
+        testResult.set(result);
+        finishMap.put(result, new ArrayList<>());
+        Configuration.browserSize = "1920x1070";
+        System.setProperty("webdriver.chrome.driver", "src/main/java/utils/chromedriver.exe");
+        open("https://www.saucedemo.com/");
+    }
+
+    @BeforeMethod
+    protected void setUp(ITestResult result) throws MalformedURLException {
+        if (shouldRunLocally()) {
+            SelenideLogger.addListener("allure", new AllureSelenide());
+            testResult.set(result);
+            finishMap.put(result, new ArrayList<>());
+            Configuration.browserSize = "1920x1070";
+            System.setProperty("webdriver.chrome.driver", "src/main/java/utils/chromedriver.exe");
+            open("https://www.saucedemo.com/");
+        } else {
+            SelenideLogger.addListener("allure", new AllureSelenide());
+            testResult.set(result);
+            finishMap.put(result, new ArrayList<>());
+            Configuration.browserSize = "1920x1070";
+            this.driver = new RemoteWebDriver(
+                    new URL(SELENIUM_URL),
+                    new ChromeOptions());
+            open("https://www.saucedemo.com/");
+        }
+    }
+
+    private boolean shouldRunLocally() {
+        TestProperties testProperties = new TestProperties();
+        return testProperties.isLocalRun();
     }
 
     @Step("Login")
@@ -76,16 +112,6 @@ public class BaseTest extends BaseRouter {
     @Step("Login")
     protected void login() {
         login(standardUser);
-    }
-
-    @BeforeMethod
-    protected void setUp(ITestResult result) {
-        SelenideLogger.addListener("allure", new AllureSelenide());
-        testResult.set(result);
-        finishMap.put(result, new ArrayList<>());
-        Configuration.browserSize = "1920x1070";
-        System.setProperty("webdriver.chrome.driver", "src/main/java/utils/chromedriver.exe");
-        open("https://www.saucedemo.com/");
     }
 
     @AfterMethod(alwaysRun = true)
