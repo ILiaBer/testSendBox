@@ -34,7 +34,7 @@ public class BaseTest extends BaseRouter {
 
     public RemoteWebDriver driver;
 
-    protected static final String SELENIUM_URL = "http://localhost:4444/wd/hub";
+    protected static final String SELENIUM_URL = "http://127.0.0.1:4444/wd/hub";
 
     public final static String pathToSaucePullover = "src/main/resources/SaucePullover.jpg";
     public final static String pathToSauceBackpack = "src/main/resources/SauceBackpack.jpg";
