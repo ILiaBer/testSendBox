@@ -48,23 +48,6 @@ public class BaseTest extends BaseRouter {
         baseRouter = new BaseRouter();
     }
 
-    //    @BeforeTest
-//    public void start() throws Exception{
-//        this.driver = new RemoteWebDriver(
-//                new URL(SELENIUM_URL),
-//                new ChromeOptions()
-//        );
-//    }
-    @BeforeMethod
-    protected void setUp1(ITestResult result) {
-        SelenideLogger.addListener("allure", new AllureSelenide());
-        testResult.set(result);
-        finishMap.put(result, new ArrayList<>());
-        Configuration.browserSize = "1920x1070";
-        System.setProperty("webdriver.chrome.driver", "src/main/java/utils/chromedriver.exe");
-        open("https://www.saucedemo.com/");
-    }
-
     @BeforeMethod
     protected void setUp(ITestResult result) throws MalformedURLException {
         if (shouldRunLocally()) {
