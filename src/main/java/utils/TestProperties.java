@@ -15,8 +15,8 @@ public class TestProperties {
 
     public TestProperties() {
         String propertyFileName = System.getenv("PROPERTY_FILE");
-        if (propertyFileName!=null){
-            propertiesFileName=propertyFileName;
+        if (propertyFileName != null) {
+            propertiesFileName = propertyFileName;
         }
         try (FileInputStream fis = new FileInputStream(propertiesFileName)) {
             Properties property = new Properties();
@@ -29,7 +29,6 @@ public class TestProperties {
         }
 
     }
-
 
     private static String getPropertyHandler(Properties property, String propertyKey, String defaultValue) {
         return System.getProperty(propertyKey) != null

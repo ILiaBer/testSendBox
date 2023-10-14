@@ -8,16 +8,14 @@ import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.qameta.allure.selenide.AllureSelenide;
 import lombok.SneakyThrows;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import steps.DeleteAll;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,8 +33,6 @@ public class BaseTest extends BaseRouter {
 
     public RemoteWebDriver driver;
 
-    protected static final String SELENIUM_URL = "http://127.0.0.1:4444/wd/hub";
-
     public final static String pathToSaucePullover = "src/main/resources/SaucePullover.jpg";
     public final static String pathToSauceBackpack = "src/main/resources/SauceBackpack.jpg";
     public final static String pathToRedTatt = "src/main/resources/RedTatt.jpg";
@@ -50,23 +46,19 @@ public class BaseTest extends BaseRouter {
 
     @BeforeMethod
     protected void setUp(ITestResult result) throws MalformedURLException {
+        SelenideLogger.addListener("allure", new AllureSelenide());
+        testResult.set(result);
+        finishMap.put(result, new ArrayList<>());
+        Configuration.browserSize = "1920x1070";
         if (shouldRunLocally()) {
-            SelenideLogger.addListener("allure", new AllureSelenide());
-            testResult.set(result);
-            finishMap.put(result, new ArrayList<>());
-            Configuration.browserSize = "1920x1070";
             System.setProperty("webdriver.chrome.driver", "src/main/java/utils/chromedriver.exe");
-            open("https://www.saucedemo.com/");
         } else {
-            SelenideLogger.addListener("allure", new AllureSelenide());
-            testResult.set(result);
-            finishMap.put(result, new ArrayList<>());
-            Configuration.browserSize = "1920x1070";
-            this.driver = new RemoteWebDriver(
-                    new URL(SELENIUM_URL),
-                    new ChromeOptions());
-            open("https://www.saucedemo.com/");
+            Configuration.remote = "http://localhost:4444/wd/hub";
+            DesiredCapabilities capabilities = new DesiredCapabilities();
+            capabilities.setBrowserName("chrome");
+            Configuration.browserCapabilities = capabilities;
         }
+        open("https://www.saucedemo.com/");
     }
 
     private boolean shouldRunLocally() {
