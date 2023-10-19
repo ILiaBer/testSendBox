@@ -8,20 +8,19 @@ import java.util.List;
 
 public class InventorySteps extends BaseTest {
 
-    public InventorySteps proceedToPayment(InventoryItem item, Customer customer) {
-        baseRouter
-                .mainMenuPage().inventoryItem.addItemToCart(item)
-                .mainMenuPage().cardBtn.click()
-                .cardPage().checkout.click()
-                .cardPage().firstName.fill(customer.getFirstName())
-                .cardPage().lastName.fill(customer.getLastName())
-                .cardPage().postalCode.fill(customer.getPostalCode())
-                .cardPage().continueBtn.click();
+    public InventorySteps proceedToPaymentWithInventory(InventoryItem item, Customer customer) {
+        baseRouter.mainMenuPage().inventoryItem.addItemToCart(item);
+        proceedToPayment(customer);
         return this;
     }
 
-    public InventorySteps proceedToPayment(List<InventoryItem> list, Customer customer) {
+    public InventorySteps proceedToPaymentWithInventory(List<InventoryItem> list, Customer customer) {
         list.forEach(item -> baseRouter.mainMenuPage().inventoryItem.addItemToCart(item));
+        proceedToPayment(customer);
+        return this;
+    }
+
+    public InventorySteps proceedToPayment(Customer customer) {
         baseRouter
                 .mainMenuPage().cardBtn.click()
                 .cardPage().checkout.click()

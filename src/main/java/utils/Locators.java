@@ -29,6 +29,7 @@ public interface Locators {
         By LAST_NAME = By.cssSelector("#last-name");
         By POSTAL_CODE = By.cssSelector("#postal-code");
         By CONTINUE = By.cssSelector("#continue");
+        By ERROR = By.xpath("//*[@data-test='error']");
     }
 
     interface CheckoutOverviewPage {

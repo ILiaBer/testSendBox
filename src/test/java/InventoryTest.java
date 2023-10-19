@@ -2,11 +2,11 @@ import data.dataClasses.InventoryItems;
 import data.models.Customer;
 import data.models.InventoryItem;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import utils.BaseTest;
 import utils.Tools;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static data.models.Customer.generateCustomer;
@@ -50,7 +50,7 @@ public class InventoryTest extends BaseTest {
         InventoryItem item = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
         Arrange(this::login);
         Act(() -> {
-            inventorySteps().proceedToPayment(item, customer);
+            inventorySteps().proceedToPaymentWithInventory(item, customer);
             baseRouter.checkoutOverviewPage().finish.click();
         });
         Assert(() -> {
@@ -66,7 +66,7 @@ public class InventoryTest extends BaseTest {
         InventoryItem item = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
         Arrange(this::login);
         Act(() -> {
-            inventorySteps().proceedToPayment(item, customer);
+            inventorySteps().proceedToPaymentWithInventory(item, customer);
         });
         Assert(() -> {
             baseRouter
@@ -87,7 +87,7 @@ public class InventoryTest extends BaseTest {
         list.add(thirdItem);
         Arrange(this::login);
         Act(() -> {
-            inventorySteps().proceedToPayment(list, customer);
+            inventorySteps().proceedToPaymentWithInventory(list, customer);
         });
         Assert(() -> {
             baseRouter
@@ -103,7 +103,7 @@ public class InventoryTest extends BaseTest {
         InventoryItem item = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
         Arrange(this::login);
         Act(() -> {
-            inventorySteps().proceedToPayment(item, customer);
+            inventorySteps().proceedToPaymentWithInventory(item, customer);
         });
         Assert(() -> {
             baseRouter
@@ -124,12 +124,41 @@ public class InventoryTest extends BaseTest {
         list.add(thirdItem);
         Arrange(this::login);
         Act(() -> {
-            inventorySteps().proceedToPayment(list, customer);
+            inventorySteps().proceedToPaymentWithInventory(list, customer);
         });
         Assert(() -> {
             baseRouter
                     .checkoutOverviewPage().total.checkText(Tools.calculateTotal(List.of(
                             firstItem.getPrice(), secondItem.getPrice(), thirdItem.getPrice())).toString());
         });
+    }
+
+    @Test(description = "Required fields for delivery information")
+    void requiredFieldsForDeliveryInformation() {
+        Cleanup(this::resetDataAfterTest);
+        Arrange(this::login);
+        Customer customer = generateCustomer();
+        SoftAssert softAssert = new SoftAssert();
+        baseRouter
+                .mainMenuPage().cardBtn.click()
+                .cardPage().checkout.click();
+        Act(() -> {
+          baseRouter
+                  .cardPage().firstName.fill(customer.getFirstName())
+                  .cardPage().lastName.fill(customer.getLastName())
+                  .cardPage().continueBtn.click();
+            softAssert.assertTrue(baseRouter.cardPage().error.isVisible());
+          baseRouter
+                  .cardPage().postalCode.fill(customer.getPostalCode())
+                  .cardPage().lastName.clearAll()
+                  .cardPage().continueBtn.click();
+            softAssert.assertTrue(baseRouter.cardPage().error.isVisible());
+            baseRouter
+                    .cardPage().lastName.fill(customer.getLastName())
+                    .cardPage().firstName.clearAll()
+                    .cardPage().continueBtn.click();
+            softAssert.assertTrue(baseRouter.cardPage().error.isVisible());
+        });
+        Assert(softAssert::assertAll);
     }
 }
