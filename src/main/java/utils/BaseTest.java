@@ -8,13 +8,16 @@ import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.qameta.allure.selenide.AllureSelenide;
 import lombok.SneakyThrows;
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import steps.DeleteAll;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +34,6 @@ public class BaseTest extends BaseRouter {
 
     public static BaseRouter baseRouter;
 
-    public RemoteWebDriver driver;
-
     public final static String pathToSaucePullover = "src/main/resources/SaucePullover.jpg";
     public final static String pathToSauceBackpack = "src/main/resources/SauceBackpack.jpg";
     public final static String pathToRedTatt = "src/main/resources/RedTatt.jpg";
@@ -42,6 +43,26 @@ public class BaseTest extends BaseRouter {
 
     public BaseTest() {
         baseRouter = new BaseRouter();
+    }
+
+    @SneakyThrows
+    @AfterClass
+    public static void sendNotification() {
+        if (TestProperties.isNotificationEnabled()) {
+            TestResultsBot bot = new TestResultsBot();
+            bot.sendAllureReport("-1001800988927");
+        }
+    }
+
+    @SneakyThrows
+    @BeforeClass
+    public static void clean() {
+        if (shouldRunLocally()) {
+            File buildFolder = new File("build/allure-results");
+            if (buildFolder.exists()) {
+                FileUtils.deleteDirectory(buildFolder);
+            }
+        }
     }
 
     @BeforeMethod
@@ -61,7 +82,7 @@ public class BaseTest extends BaseRouter {
         open("https://www.saucedemo.com/");
     }
 
-    private boolean shouldRunLocally() {
+    private static boolean shouldRunLocally() {
         TestProperties testProperties = new TestProperties();
         return testProperties.isLocalRun();
     }

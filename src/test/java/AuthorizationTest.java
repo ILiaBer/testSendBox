@@ -40,7 +40,7 @@ public class AuthorizationTest extends BaseTest {
     void logoutUser() {
         Arrange(() -> {
             UserLogins login = getRandomEnumExceptOne(UserLogins.LOCKED_OUT_USER);
-            login(generateUser(login.getName(), Users.defaultPass));
+            login(generateUser("123" + login.getName(), Users.defaultPass));
         });
         Act(() -> {
             mainPageSteps().logout();

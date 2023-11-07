@@ -3,6 +3,8 @@ plugins {
     id "io.qameta.allure" version "2.11.2"
 }
 
+apply plugin: 'io.qameta.allure'
+
 group 'org.example'
 version '1.0-SNAPSHOT'
 
@@ -24,10 +26,18 @@ dependencies {
             'commons-io:commons-io:2.14.0',
             'io.qameta.allure:allure-selenide:2.24.0',
             'org.seleniumhq.selenium:selenium-remote-driver:4.4.0',
+            'org.telegram:telegrambots:6.8.0',
+            'org.apache.commons:commons-compress:1.21',
+            'com.google.code.gson:gson:2.10',
+            'io.qameta.allure:allure-commandline:2.24.1',
             'log4j:log4j:1.2.17'
     )
     testImplementation 'org.testng:testng:7.4.0'
     testRuntimeOnly 'org.testng:testng:7.4.0'
+}
+
+task generateAllureReport(type: Exec) {
+    commandLine 'allure', 'generate', 'build/allure-results'
 }
 
 test {

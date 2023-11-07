@@ -1,0 +1,18 @@
+{
+  "report": {
+    "resultPattern": ".*-result.json",
+    "reportDir": "build/allure-results",
+    "links": false,
+    "history": {
+      "items": 5
+    }
+  },
+  "graph": {
+    "histogram": {
+      "enabled": true
+    },
+    "trend": {
+      "items": 5
+    }
+  }
+}
