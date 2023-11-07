@@ -57,7 +57,7 @@ public class BaseTest extends BaseRouter {
     @SneakyThrows
     @BeforeClass
     public static void clean() {
-        if (shouldRunLocally()) {
+        if (TestProperties.isNotificationEnabled()) {
             File buildFolder = new File("build/allure-results");
             if (buildFolder.exists()) {
                 FileUtils.deleteDirectory(buildFolder);
