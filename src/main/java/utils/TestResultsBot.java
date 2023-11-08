@@ -11,45 +11,12 @@ import org.testng.annotations.AfterClass;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class TestResultsBot extends TelegramLongPollingBot {
-
-//    public void sendAllureReport(String chatId) {
-//        String allureReportPath = "build/allure-results";
-//        String zipFilePath ="build/reports/allure-report.zip";
-//        try {
-//            ZipUtil.zipDirectory(new File(allureReportPath), new File(zipFilePath));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        // Отправляем ZIP-архив в Telegram
-//        SendDocument sendDocument = new SendDocument();
-//        sendDocument.setChatId(chatId);
-//        sendDocument.setDocument(new InputFile(new File(zipFilePath)));
-//
-//        try {
-//            execute(sendDocument);
-//        } catch (TelegramApiException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-    @Override
-    public void onUpdateReceived(Update update) {
-    }
-
-    @Override
-    public String getBotUsername() {
-        return "ililozTestResults_bot";
-    }
-
-    @Override
-    public String getBotToken() {
-        return "6497299015:AAGJROT1rYBk1WqymLmCFcU4ix9YVRlOj1E";
-    }
-
 
     @SneakyThrows
     @AfterClass
@@ -66,7 +33,6 @@ public class TestResultsBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
-
 
     @SneakyThrows
     private String getBriefInfo() {
@@ -91,7 +57,7 @@ public class TestResultsBot extends TelegramLongPollingBot {
                     } else {
                         failedTests++;
                         list.add(testResult.fullName());
-                        failedTestsString = "Упавшие тесты:\n";
+                        failedTestsString = "\nIn particular:\n";
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -106,9 +72,22 @@ public class TestResultsBot extends TelegramLongPollingBot {
         }
         String str = failedTestsString + String.join("\n", resultList);
 
-
         double rate = Math.round(((double) passedTests / (passedTests + failedTests) * 100) * 10) / 10.0;
-        return "Passed tests : " + passedTests + "\nFailed tests: " + failedTests + "\nTest Pass Rate - " + rate + "%" +
-                "\n" + str;
+
+        return "Test Pass Rate - " + rate + "%\nPassed tests : " + passedTests + "\nFailed tests: " + failedTests + str;
+    }
+
+    @Override
+    public void onUpdateReceived(Update update) {
+    }
+
+    @Override
+    public String getBotUsername() {
+        return "ililozTestResults_bot";
+    }
+
+    @Override
+    public String getBotToken() {
+        return "6497299015:AAGJROT1rYBk1WqymLmCFcU4ix9YVRlOj1E";
     }
 }
