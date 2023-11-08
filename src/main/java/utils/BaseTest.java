@@ -11,10 +11,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.ITestResult;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.*;
 import steps.DeleteAll;
 
 import java.io.File;
@@ -34,19 +31,20 @@ public class BaseTest extends BaseRouter {
 
     public static BaseRouter baseRouter;
 
-    public final static String pathToSaucePullover = "src/main/resources/SaucePullover.jpg";
-    public final static String pathToSauceBackpack = "src/main/resources/SauceBackpack.jpg";
-    public final static String pathToRedTatt = "src/main/resources/RedTatt.jpg";
-    public final static String pathToRedOnesie = "src/main/resources/RedOnesie.jpg";
-    public final static String pathToBoltShirt = "src/main/resources/BoltShirt.jpg";
-    public final static String pathToBikeLight = "src/main/resources/BikeLight.jpg";
+    private final static String resources = "src/main/resources/";
+    public final static String pathToSaucePullover = resources + "SaucePullover.jpg";
+    public final static String pathToSauceBackpack = resources + "SauceBackpack.jpg";
+    public final static String pathToRedTatt = resources + "RedTatt.jpg";
+    public final static String pathToRedOnesie = resources + "RedOnesie.jpg";
+    public final static String pathToBoltShirt = resources + "BoltShirt.jpg";
+    public final static String pathToBikeLight = resources + "BikeLight.jpg";
 
     public BaseTest() {
         baseRouter = new BaseRouter();
     }
 
     @SneakyThrows
-    @AfterClass
+    @AfterSuite
     public static void sendNotification() {
         if (TestProperties.isNotificationEnabled()) {
             TestResultsBot bot = new TestResultsBot();
@@ -55,7 +53,7 @@ public class BaseTest extends BaseRouter {
     }
 
     @SneakyThrows
-    @BeforeClass
+    @BeforeSuite
     public static void clean() {
         File buildFolder = new File("build/allure-results");
         if (buildFolder.exists()) {
@@ -64,7 +62,7 @@ public class BaseTest extends BaseRouter {
     }
 
     @BeforeMethod
-    protected void setUp(ITestResult result) throws MalformedURLException {
+    protected void setUp(ITestResult result) {
         SelenideLogger.addListener("allure", new AllureSelenide());
         testResult.set(result);
         finishMap.put(result, new ArrayList<>());

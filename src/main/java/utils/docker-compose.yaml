@@ -1,0 +1,16 @@
+version: '3'
+services:
+  selenium-chrome:
+    image: selenium/standalone-chrome:3.141.59
+    ports:
+      - "4444:4444"
+
+  gradle-test:
+    image: ililoz/ubuntu-java-gradle
+    network_mode: "host"
+    volumes:
+      - ${CUSTOM_SRC_PATH}:/usr/src/gradleTest
+    working_dir: /usr/src/gradleTest
+    environment:
+      - CUSTOM_SRC_PATH=/path/to/your/custom/src
+    command: gradle clean test -Dtest.single=* test
