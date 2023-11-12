@@ -54,7 +54,7 @@ public class BaseTest extends BaseRouter {
 
     @SneakyThrows
     @BeforeSuite
-    public static void clean() {
+    public static void cleanBuildFolder() {
         File buildFolder = new File("build/allure-results");
         if (buildFolder.exists()) {
             FileUtils.deleteDirectory(buildFolder);

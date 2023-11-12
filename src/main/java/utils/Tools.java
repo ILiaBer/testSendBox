@@ -11,7 +11,10 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -54,7 +57,7 @@ public class Tools {
 
     public static Object getRandomClassObjExceptList(Class<?> classEx, List<Object> exceptedList) {
         Object randomElement = getRandomClassObj(classEx);
-        while(exceptedList.contains(randomElement))
+        while (exceptedList.contains(randomElement))
             randomElement = getRandomClassObj(classEx);
         return randomElement;
     }

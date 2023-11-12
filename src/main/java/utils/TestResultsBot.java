@@ -1,6 +1,8 @@
 package utils;
 
 import com.google.gson.Gson;
+import data.models.CustomTestsResults;
+import data.models.DataForCustomResults;
 import lombok.SneakyThrows;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static data.models.DataForCustomResults.generateDefaultDataForCustomResults;
 
 public class TestResultsBot extends TelegramLongPollingBot {
 
@@ -37,44 +41,73 @@ public class TestResultsBot extends TelegramLongPollingBot {
     @SneakyThrows
     private String getBriefInfo() {
         File reportDirectory = new File("build/allure-results");
-        List<String> list = new ArrayList();
-        String failedTestsString = new String();
 
         if (!reportDirectory.exists() || !reportDirectory.isDirectory()) {
             return "Отчет Allure не найден.";
         }
+        DataForCustomResults dataForResults = generateDefaultDataForCustomResults();
+        CustomTestsResults myTestsResults = getResults(dataForResults, reportDirectory);
+        return generateMessage(dataForResults, myTestsResults);
+    }
+
+    private static String generateMessage(DataForCustomResults dataForResults, CustomTestsResults myTestsResults) {
+        String stringOfSkippedTests = dataForResults.getInParticularSkipped() +
+                generateStringWithoutDuplicates(dataForResults.getListOfSkippedTest());
+        String stringOfFailedTests = dataForResults.getInParticularFailed()
+                + generateStringWithoutDuplicates(dataForResults.getListOfFailedTest());
+        double rate = Math.round(((double) myTestsResults.getPassedTests() / (myTestsResults.getPassedTests() +
+                myTestsResults.getFailedTests()) * 100) * 10) / 10.0;
+
+        if (myTestsResults.getSkippedTest() != 0 && myTestsResults.getPassedTests() == 0) {
+            return "An error occurred while running the tests. Check the Stack Trace";
+        } else {
+            return "Test Pass Rate - " + rate + "%\nPassed tests : " + myTestsResults.getPassedTests() +
+                    "\nFailed tests: " + myTestsResults.getFailedTests() + stringOfFailedTests + stringOfSkippedTests;
+        }
+    }
+
+    private static CustomTestsResults getResults(DataForCustomResults data, File reportDirectory) {
+        CustomTestsResults customTestsResults = new CustomTestsResults();
         int passedTests = 0;
         int failedTests = 0;
-
+        int skippedTest = 0;
         File[] testResultFiles = reportDirectory.listFiles((dir, name) -> name.endsWith("-result.json"));
-        if (testResultFiles != null) {
-            for (File resultFile : testResultFiles) {
-                try {
-                    String jsonContent = Files.readString(resultFile.toPath());
-                    TestResult testResult = new Gson().fromJson(jsonContent, TestResult.class);
-                    if (testResult.isTestPassed().equals("passed")) {
-                        passedTests++;
-                    } else {
-                        failedTests++;
-                        list.add(testResult.fullName());
-                        failedTestsString = "\nIn particular:\n";
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+        for (File resultFile : testResultFiles) {
+            try {
+                String jsonContent = Files.readString(resultFile.toPath());
+                TestResult testResult = new Gson().fromJson(jsonContent, TestResult.class);
+                if (testResult.isTestPassed().equals("passed")) {
+                    passedTests++;
                 }
+                if (testResult.isTestPassed().equals("skipped")) {
+                    data.getListOfSkippedTest().add(testResult.fullName());
+                    skippedTest++;
+                    String skippedTestLabel = "\nSkipped tests: " + skippedTest;
+                    data.setInParticularSkipped(skippedTestLabel + "\nIn particular:\n");
+                }
+                if (testResult.isTestPassed().equals("failed")) {
+                    failedTests++;
+                    data.getListOfFailedTest().add(testResult.fullName());
+                    data.setInParticularFailed("\nIn particular:\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+        customTestsResults.setPassedTests(passedTests);
+        customTestsResults.setFailedTests(failedTests);
+        customTestsResults.setSkippedTest(skippedTest);
+        return customTestsResults;
+    }
 
+
+    private static String generateStringWithoutDuplicates(List<String> list) {
         Set<String> uniqueSet = new HashSet<>(list);
         List<String> resultList = new ArrayList<>(uniqueSet);
         for (int i = 0; i < resultList.size(); i++) {
-            resultList.set(i, resultList.get(i));
+            resultList.set(i, list.get(i));
         }
-        String str = failedTestsString + String.join("\n", resultList);
-
-        double rate = Math.round(((double) passedTests / (passedTests + failedTests) * 100) * 10) / 10.0;
-
-        return "Test Pass Rate - " + rate + "%\nPassed tests : " + passedTests + "\nFailed tests: " + failedTests + str;
+        return String.join("\n", resultList);
     }
 
     @Override
