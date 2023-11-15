@@ -1,10 +1,5 @@
 package data.models;
 
-import com.github.javafaker.Faker;
-import data.IBase;
-import lombok.*;
-import lombok.experimental.Accessors;
-
 //@Builder
 //@Data
 //@ToString

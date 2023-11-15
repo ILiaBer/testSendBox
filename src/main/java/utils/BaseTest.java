@@ -4,6 +4,7 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.google.common.collect.Lists;
 import data.models.User;
+import data.models.api.ResponseModel;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.qameta.allure.selenide.AllureSelenide;
@@ -15,7 +16,6 @@ import org.testng.annotations.*;
 import steps.DeleteAll;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +30,8 @@ public class BaseTest extends BaseRouter {
 
 
     public static BaseRouter baseRouter;
+
+    public final static String allureProjectId = "my-project-id";
 
     private final static String resources = "src/main/resources/";
     public final static String pathToSaucePullover = resources + "SaucePullover.jpg";
@@ -48,16 +50,23 @@ public class BaseTest extends BaseRouter {
     public static void sendNotification() {
         if (TestProperties.isNotificationEnabled()) {
             TestResultsBot bot = new TestResultsBot();
+            String[] cmd = {"powershell.exe", "./send_results.ps1"};
+            Runtime.getRuntime().exec(cmd);
             bot.sendAllureReport("-1001800988927");
+            generateAllureLink();
         }
     }
 
     @SneakyThrows
     @BeforeSuite
-    public static void cleanBuildFolder() {
-        File buildFolder = new File("build/allure-results");
-        if (buildFolder.exists()) {
-            FileUtils.deleteDirectory(buildFolder);
+    public static void cleanResults() {
+        File allureResults = new File("build/allure-results");
+        File testResults = new File("build/test-results");
+        if (testResults.exists()) {
+            FileUtils.deleteDirectory(testResults);
+        }
+        if (allureResults.exists()) {
+            FileUtils.deleteDirectory(allureResults);
         }
     }
 
@@ -81,6 +90,10 @@ public class BaseTest extends BaseRouter {
     private static boolean shouldRunLocally() {
         TestProperties testProperties = new TestProperties();
         return testProperties.isLocalRun();
+    }
+
+    private static ResponseModel generateAllureLink(){
+        return Tools.getAllureInfo();
     }
 
     @Step("Login")

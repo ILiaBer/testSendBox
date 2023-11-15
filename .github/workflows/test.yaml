@@ -33,13 +33,6 @@ jobs:
           allure_results: build/allure-results
           allure_report: allure-report
           allure_history: allure-history
-#          - uses: Send Telegram notification
-#            run: |
-#              curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
-#              -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-#              -d text="Тесты успешно пройдены! Статистика и отчет доступны по ссылке: https://example.com/allure-report"
-
-      # публикуем отчет
       - uses: peaceiris/actions-gh-pages@v2
         if: always()
         env:

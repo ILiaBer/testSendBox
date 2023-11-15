@@ -1,7 +1,6 @@
 package data.models;
 
 import data.IBase;
-import org.testng.Assert;
 
 public class JournalMemberToFill implements IBase {
 

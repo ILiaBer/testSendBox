@@ -1,23 +1,22 @@
 package utils;
 
-import data.models.InventoryItem;
+import data.models.api.ResponseModel;
 import lombok.SneakyThrows;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+import static data.api.ApiSpecs.request;
+import static io.restassured.RestAssured.given;
 import static java.util.Arrays.stream;
+import static utils.BaseTest.allureProjectId;
 
 
 public class Tools {
@@ -92,5 +91,14 @@ public class Tools {
         String formattedPrice = new DecimalFormat("#.00").format(total * 1.08);
         formattedPrice = formattedPrice.replace(",", ".");
         return Double.parseDouble(formattedPrice);
+    }
+
+    public static ResponseModel getAllureInfo() {
+        return given(request)
+                .when()
+                .get("/projects/" + allureProjectId)
+                .then()
+                .log().status()
+                .extract().as(ResponseModel.class);
     }
 }
