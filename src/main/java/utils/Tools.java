@@ -1,6 +1,6 @@
 package utils;
 
-import data.models.api.ResponseModel;
+import data.models.api.AllureResponse;
 import lombok.SneakyThrows;
 
 import javax.imageio.ImageIO;
@@ -93,12 +93,22 @@ public class Tools {
         return Double.parseDouble(formattedPrice);
     }
 
-    public static ResponseModel getAllureInfo() {
+    public static AllureResponse getAllureInfo() {
         return given(request)
                 .when()
+                .header("Accept", "application/json")
                 .get("/projects/" + allureProjectId)
                 .then()
                 .log().status()
-                .extract().as(ResponseModel.class);
+                .extract().as(AllureResponse.class);
+    }
+
+    @SneakyThrows
+    public static String getLastAllureUrl(String[] allureUrls){
+        if (allureUrls != null && allureUrls.length > 0) {
+            return allureUrls[0];
+        } else {
+            throw new Exception("There aren't any allure reports!");
+        }
     }
 }

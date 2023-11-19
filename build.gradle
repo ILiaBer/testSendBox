@@ -42,7 +42,16 @@ task generateAllureReport(type: Exec) {
     commandLine 'allure', 'generate', 'build/allure-results'
 }
 
+//
+//task cleanBeforeTest(type: Exec) {
+//    commandLine 'gradle', 'clean'
+//}
+
 test {
     useTestNG()
     systemProperties(System.getProperties())
 }
+
+
+//test.dependsOn clean
+//test.dependsOn compileTestJava

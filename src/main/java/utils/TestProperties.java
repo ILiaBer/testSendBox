@@ -14,6 +14,8 @@ public class TestProperties {
     private static boolean localRun;
     @Getter
     private static boolean notificationEnabled;
+    @Getter
+    private static boolean allureEnabled;
 
     public TestProperties() {
         String propertyFileName = System.getenv("PROPERTY_FILE");
@@ -26,6 +28,7 @@ public class TestProperties {
 
             localRun = Boolean.parseBoolean(getPropertyHandler(property, "localRun", "true"));
             notificationEnabled = Boolean.parseBoolean(getPropertyHandler(property, "notificationEnabled", "true"));
+            allureEnabled = Boolean.parseBoolean(getPropertyHandler(property, "allureEnabled", "false"));
 
         } catch (IOException ex) {
             ex.printStackTrace();

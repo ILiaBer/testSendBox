@@ -4,7 +4,7 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.google.common.collect.Lists;
 import data.models.User;
-import data.models.api.ResponseModel;
+import data.models.api.AllureResponse;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.qameta.allure.selenide.AllureSelenide;
@@ -12,7 +12,8 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.ITestResult;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeMethod;
 import steps.DeleteAll;
 
 import java.io.File;
@@ -22,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.codeborne.selenide.Selenide.open;
 import static data.dataClasses.Users.standardUser;
+import static utils.Tools.getLastAllureUrl;
 
 public class BaseTest extends BaseRouter {
 
@@ -48,23 +50,26 @@ public class BaseTest extends BaseRouter {
     @SneakyThrows
     @AfterSuite
     public static void sendNotification() {
+        String chatId = "-1001800988927";
         if (TestProperties.isNotificationEnabled()) {
+            finishMethod();
             TestResultsBot bot = new TestResultsBot();
             String[] cmd = {"powershell.exe", "./send_results.ps1"};
             Runtime.getRuntime().exec(cmd);
-            bot.sendAllureReport("-1001800988927");
-            generateAllureLink();
+            if (TestProperties.isAllureEnabled()) {
+                AllureResponse response = generateAllureLink();
+                bot.sendAllureReport(chatId, getLastAllureUrl(response.getData().getProject().getReports()));
+            } else {
+                bot.sendAllureReport(chatId);
+            }
+            cleanResults();
         }
     }
 
+
     @SneakyThrows
-    @BeforeSuite
     public static void cleanResults() {
         File allureResults = new File("build/allure-results");
-        File testResults = new File("build/test-results");
-        if (testResults.exists()) {
-            FileUtils.deleteDirectory(testResults);
-        }
         if (allureResults.exists()) {
             FileUtils.deleteDirectory(allureResults);
         }
@@ -92,7 +97,7 @@ public class BaseTest extends BaseRouter {
         return testProperties.isLocalRun();
     }
 
-    private static ResponseModel generateAllureLink(){
+    private static AllureResponse generateAllureLink() {
         return Tools.getAllureInfo();
     }
 
@@ -119,8 +124,8 @@ public class BaseTest extends BaseRouter {
         login(standardUser);
     }
 
-    @AfterMethod(alwaysRun = true)
-    protected void finishMethod() {
+
+    protected static void finishMethod() {
         for (Runnable runnable : Lists.reverse(finishMap.get(testResult.get())))
             runnable.run();
         finishMap.remove(testResult.get());

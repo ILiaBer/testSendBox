@@ -24,10 +24,30 @@ public class TestResultsBot extends TelegramLongPollingBot {
 
     @SneakyThrows
     @AfterClass
+    public void sendAllureReport(String chatId, String allureLink) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.enableMarkdown(true);
+        String message = getBriefInfo() + "\n\n[Allure report link](" + allureLink + ")";
+        System.out.println(message);
+        message = new String(message.getBytes(), "UTF-8");
+        sendMessage.setText(message);
+
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SneakyThrows
+    @AfterClass
     public void sendAllureReport(String chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
+        sendMessage.enableMarkdown(true);
         String message = getBriefInfo();
+        System.out.println(message);
         message = new String(message.getBytes(), "UTF-8");
         sendMessage.setText(message);
 

@@ -1,24 +1,20 @@
-﻿package data.api;
+package data.api;
 
-import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
 
-import static data.api.CustomApiListener.withCustomTemplates;
 import static io.restassured.RestAssured.with;
 import static io.restassured.http.ContentType.JSON;
+import static io.restassured.http.ContentType.TEXT;
 
 public class ApiSpecs {
-
 
     public static RequestSpecification request = with()
             .log().uri()
             .log().headers()
             .log().body()
-            .filter(withCustomTemplates())
-            .contentType(JSON)
-            .baseUri("http://localhost:5050")
-            .basePath("/api");
+            .contentType(TEXT)
+            .baseUri("http://127.0.0.1:5050")
+            .basePath("/allure-docker-service");
 //
 //    public static ResponseSpecification response200 = new ResponseSpecBuilder()
 //            .expectStatusCode(200)
