@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class AllureResponse {
 
     private DataModel data;
+    private MetaData metaData;
 
     @Data
     @Builder
@@ -33,5 +34,15 @@ public class AllureResponse {
         private String id;
         private String[] reports;
         private String[] reportsId;
+    }
+
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class MetaData {
+        private String message;
     }
 }

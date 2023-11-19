@@ -12,6 +12,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.ITestResult;
+import org.testng.Reporter;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import steps.DeleteAll;
@@ -23,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.codeborne.selenide.Selenide.open;
 import static data.dataClasses.Users.standardUser;
+import static utils.ApiTools.getAllureInfo;
 import static utils.Tools.getLastAllureUrl;
 
 public class BaseTest extends BaseRouter {
@@ -33,7 +35,7 @@ public class BaseTest extends BaseRouter {
 
     public static BaseRouter baseRouter;
 
-    public final static String allureProjectId = "my-project-id";
+    public final static String allureProjectId = "my-project-id";  //Also in send_results.ps1
 
     private final static String resources = "src/main/resources/";
     public final static String pathToSaucePullover = resources + "SaucePullover.jpg";
@@ -56,13 +58,29 @@ public class BaseTest extends BaseRouter {
             TestResultsBot bot = new TestResultsBot();
             String[] cmd = {"powershell.exe", "./send_results.ps1"};
             Runtime.getRuntime().exec(cmd);
-            if (TestProperties.isAllureEnabled()) {
-                AllureResponse response = generateAllureLink();
-                bot.sendAllureReport(chatId, getLastAllureUrl(response.getData().getProject().getReports()));
-            } else {
-                bot.sendAllureReport(chatId);
+            try {
+                if (TestProperties.isAllureEnabled()) {
+                    AllureResponse response = getAllureInfo();
+                    System.out.println(response + "1231234");
+                    bot.sendAllureReport(chatId, getLastAllureUrl(response.getData().getProject().getReports()));
+                } else {
+                    bot.sendAllureReport(chatId);
+                }
+            }
+            catch (NullPointerException e) {
+                Reporter.log("Something went wrong with allureProjectId" + e.getMessage());
             }
             cleanResults();
+        }
+    }
+
+    private AllureResponse createAllureProjectIfNotExist(){
+        AllureResponse response = getAllureInfo();
+        if (getAllureInfo().getMetaData().getMessage().equals("project_id " + allureProjectId + " not found")){
+            ApiTools.createProject();
+            return getAllureInfo();
+        } else {
+            return response;
         }
     }
 
@@ -95,10 +113,6 @@ public class BaseTest extends BaseRouter {
     private static boolean shouldRunLocally() {
         TestProperties testProperties = new TestProperties();
         return testProperties.isLocalRun();
-    }
-
-    private static AllureResponse generateAllureLink() {
-        return Tools.getAllureInfo();
     }
 
     @Step("Login")

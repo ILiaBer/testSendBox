@@ -93,16 +93,6 @@ public class Tools {
         return Double.parseDouble(formattedPrice);
     }
 
-    public static AllureResponse getAllureInfo() {
-        return given(request)
-                .when()
-                .header("Accept", "application/json")
-                .get("/projects/" + allureProjectId)
-                .then()
-                .log().status()
-                .extract().as(AllureResponse.class);
-    }
-
     @SneakyThrows
     public static String getLastAllureUrl(String[] allureUrls){
         if (allureUrls != null && allureUrls.length > 0) {

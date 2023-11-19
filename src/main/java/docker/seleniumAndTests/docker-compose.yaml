@@ -4,6 +4,7 @@ services:
     image: selenium/standalone-chrome:3.141.59
     ports:
       - "4444:4444"
+      - "5051:5050"
 
   gradle-test:
     image: ililoz/ubuntu-java-gradle
