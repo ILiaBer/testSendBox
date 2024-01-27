@@ -26,6 +26,7 @@ public class AuthorizationTest extends BaseTest {
     void lockedUserCantBeRegistered() {
         User user = generateUser(UserLogins.LOCKED_OUT_USER.getName(), Users.defaultPass);
         Act(() -> {
+
                     authorizationPage().userLogin.fill(user.getLogin());
                     authorizationPage().password.fill(user.getPassword());
                     authorizationPage().login.click();
