@@ -1,6 +1,7 @@
 package data.models.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,8 @@ import lombok.NoArgsConstructor;
 public class AllureResponse {
 
     private DataModel data;
+
+    @JsonProperty("meta_data")
     private MetaData metaData;
 
     @Data

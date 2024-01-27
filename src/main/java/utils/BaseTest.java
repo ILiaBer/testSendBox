@@ -60,8 +60,7 @@ public class BaseTest extends BaseRouter {
             Runtime.getRuntime().exec(cmd);
             try {
                 if (TestProperties.isAllureEnabled()) {
-                    AllureResponse response = getAllureInfo();
-                    System.out.println(response + "1231234");
+                    AllureResponse response = createAllureProjectIfNotExist();
                     bot.sendAllureReport(chatId, getLastAllureUrl(response.getData().getProject().getReports()));
                 } else {
                     bot.sendAllureReport(chatId);
@@ -70,20 +69,18 @@ public class BaseTest extends BaseRouter {
             catch (NullPointerException e) {
                 Reporter.log("Something went wrong with allureProjectId" + e.getMessage());
             }
-            cleanResults();
         }
     }
 
-    private AllureResponse createAllureProjectIfNotExist(){
+    private static AllureResponse createAllureProjectIfNotExist(){
         AllureResponse response = getAllureInfo();
-        if (getAllureInfo().getMetaData().getMessage().equals("project_id " + allureProjectId + " not found")){
+        if (response.getMetaData().getMessage().equals("project_id " + allureProjectId + " not found")){
             ApiTools.createProject();
             return getAllureInfo();
         } else {
             return response;
         }
     }
-
 
     @SneakyThrows
     public static void cleanResults() {
@@ -96,6 +93,7 @@ public class BaseTest extends BaseRouter {
     @BeforeMethod
     protected void setUp(ITestResult result) {
         SelenideLogger.addListener("allure", new AllureSelenide());
+        cleanResults();
         testResult.set(result);
         finishMap.put(result, new ArrayList<>());
         Configuration.browserSize = "1920x1070";

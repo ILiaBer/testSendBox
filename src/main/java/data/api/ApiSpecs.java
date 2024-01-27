@@ -1,8 +1,6 @@
 package data.api;
 
-import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
 
 import static io.restassured.RestAssured.with;
 import static io.restassured.http.ContentType.TEXT;

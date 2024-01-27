@@ -1,8 +1,6 @@
 package utils;
 
 import data.models.api.AllureResponse;
-import data.models.api.ProjectsResponse;
-import io.restassured.response.ResponseBody;
 
 import static data.api.ApiSpecs.request;
 import static io.restassured.RestAssured.given;
@@ -18,16 +16,13 @@ public class ApiTools {
                 .then()
                 .log().status()
                 .extract().as(AllureResponse.class);
-
     }
 
-    public static void createProject(){
+    public static void createProject() {
         given(request)
                 .when()
                 .header("Accept", "application/json")
                 .body(allureProjectId)
                 .post("/projects");
-
     }
-
 }
