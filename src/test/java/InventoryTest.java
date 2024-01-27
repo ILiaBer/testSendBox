@@ -19,12 +19,10 @@ public class InventoryTest extends BaseTest {
         InventoryItem item = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
         Arrange(this::login);
         Act(() -> {
-            baseRouter
-                    .mainMenuPage().inventoryItem.addItemToCart(item);
+            mainMenuPage().inventoryItem.addItemToCart(item);
         });
         Assert(() -> {
-            baseRouter
-                    .mainMenuPage().cardBtn.click()
+            mainMenuPage().cardBtn.click()
                     .cardPage().cardItem.checkHeader(item)
                     .cardPage().cardItem.checkDescriptionByHeader(item)
                     .cardPage().cardItem.checkPriceByHeader(item);
@@ -36,8 +34,7 @@ public class InventoryTest extends BaseTest {
         InventoryItem item = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
         Arrange(this::login);
         Assert(() -> {
-            baseRouter
-                    .mainMenuPage().inventoryItem.checkHeader(item)
+            mainMenuPage().inventoryItem.checkHeader(item)
                     .mainMenuPage().inventoryItem.checkDescriptionByHeader(item)
                     .mainMenuPage().inventoryItem.checkPriceByHeader(item)
                     .mainMenuPage().inventoryItem.checkAttachment(item);
@@ -51,11 +48,10 @@ public class InventoryTest extends BaseTest {
         Arrange(this::login);
         Act(() -> {
             inventorySteps().proceedToPaymentWithInventory(item, customer);
-            baseRouter.checkoutOverviewPage().finish.click();
+            checkoutOverviewPage().finish.click();
         });
         Assert(() -> {
-            baseRouter
-                    .checkoutOverviewPage().orderComplete.visible();
+            checkoutOverviewPage().orderComplete.visible();
         });
     }
 
@@ -69,8 +65,7 @@ public class InventoryTest extends BaseTest {
             inventorySteps().proceedToPaymentWithInventory(item, customer);
         });
         Assert(() -> {
-            baseRouter
-                    .checkoutOverviewPage().tax.checkText(Tools.calculateTax(item.getPrice()).toString());
+            checkoutOverviewPage().tax.checkText(Tools.calculateTax(item.getPrice()).toString());
         });
     }
 
@@ -90,9 +85,8 @@ public class InventoryTest extends BaseTest {
             inventorySteps().proceedToPaymentWithInventory(list, customer);
         });
         Assert(() -> {
-            baseRouter
-                    .checkoutOverviewPage().tax.checkText(Tools.calculateTax(List.of(
-                            firstItem.getPrice(), secondItem.getPrice(), thirdItem.getPrice())).toString());
+            checkoutOverviewPage().tax.checkText(Tools.calculateTax(List.of(
+                    firstItem.getPrice(), secondItem.getPrice(), thirdItem.getPrice())).toString());
         });
     }
 
@@ -106,8 +100,7 @@ public class InventoryTest extends BaseTest {
             inventorySteps().proceedToPaymentWithInventory(item, customer);
         });
         Assert(() -> {
-            baseRouter
-                    .checkoutOverviewPage().total.checkText(Tools.calculateTotal(item.getPrice()).toString());
+            checkoutOverviewPage().total.checkText(Tools.calculateTotal(item.getPrice()).toString());
         });
     }
 
@@ -127,9 +120,8 @@ public class InventoryTest extends BaseTest {
             inventorySteps().proceedToPaymentWithInventory(list, customer);
         });
         Assert(() -> {
-            baseRouter
-                    .checkoutOverviewPage().total.checkText(Tools.calculateTotal(List.of(
-                            firstItem.getPrice(), secondItem.getPrice(), thirdItem.getPrice())).toString());
+            checkoutOverviewPage().total.checkText(Tools.calculateTotal(List.of(
+                    firstItem.getPrice(), secondItem.getPrice(), thirdItem.getPrice())).toString());
         });
     }
 
@@ -139,25 +131,21 @@ public class InventoryTest extends BaseTest {
         Arrange(this::login);
         Customer customer = generateCustomer();
         SoftAssert softAssert = new SoftAssert();
-        baseRouter
-                .mainMenuPage().cardBtn.click()
+        mainMenuPage().cardBtn.click()
                 .cardPage().checkout.click();
         Act(() -> {
-          baseRouter
-                  .cardPage().firstName.fill(customer.getFirstName())
-                  .cardPage().lastName.fill(customer.getLastName())
-                  .cardPage().continueBtn.click();
-            softAssert.assertTrue(baseRouter.cardPage().error.isVisible());
-          baseRouter
-                  .cardPage().postalCode.fill(customer.getPostalCode())
-                  .cardPage().lastName.clearAll()
-                  .cardPage().continueBtn.click();
-            softAssert.assertTrue(baseRouter.cardPage().error.isVisible());
-            baseRouter
+            cardPage().firstName.fill(customer.getFirstName())
                     .cardPage().lastName.fill(customer.getLastName())
+                    .cardPage().continueBtn.click();
+            softAssert.assertTrue(cardPage().error.isVisible());
+            cardPage().postalCode.fill(customer.getPostalCode())
+                    .cardPage().lastName.clearAll()
+                    .cardPage().continueBtn.click();
+            softAssert.assertTrue(cardPage().error.isVisible());
+            cardPage().lastName.fill(customer.getLastName())
                     .cardPage().firstName.clearAll()
                     .cardPage().continueBtn.click();
-            softAssert.assertTrue(baseRouter.cardPage().error.isVisible());
+            softAssert.assertTrue(cardPage().error.isVisible());
         });
         Assert(softAssert::assertAll);
     }

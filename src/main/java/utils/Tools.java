@@ -1,6 +1,5 @@
 package utils;
 
-import data.models.api.AllureResponse;
 import lombok.SneakyThrows;
 
 import javax.imageio.ImageIO;
@@ -10,13 +9,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static data.api.ApiSpecs.request;
-import static io.restassured.RestAssured.given;
 import static java.util.Arrays.stream;
-import static utils.BaseTest.allureProjectId;
 
 
 public class Tools {
@@ -94,9 +91,10 @@ public class Tools {
     }
 
     @SneakyThrows
-    public static String getLastAllureUrl(String[] allureUrls){
+    public static String getAllureUrl(String[] allureUrls) {
         if (allureUrls != null && allureUrls.length > 0) {
-            return allureUrls[0];
+            System.out.println(Arrays.toString(allureUrls));
+            return allureUrls[1];
         } else {
             throw new Exception("There aren't any allure reports!");
         }

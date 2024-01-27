@@ -13,13 +13,12 @@ public class AuthorizationTest extends BaseTest {
     @Test(description = "User can be registered", dataProviderClass = Users.class, dataProvider = "positiveAuthorization")
     void userCanBeRegistered(BaseTestModel<User> user) {
         Act(() -> {
-            baseRouter
-                    .authorizationPage().userLogin.fill(user.getBaseModel().getLogin())
-                    .authorizationPage().password.fill(user.getBaseModel().getPassword())
-                    .authorizationPage().login.click();
+                    authorizationPage().userLogin.fill(user.getBaseModel().getLogin());
+                    authorizationPage().password.fill(user.getBaseModel().getPassword());
+                    authorizationPage().login.click();
         });
         Assert(() -> {
-            baseRouter.mainMenuPage().table.visible();
+            mainMenuPage().table.visible();
         });
     }
 
@@ -27,13 +26,11 @@ public class AuthorizationTest extends BaseTest {
     void lockedUserCantBeRegistered() {
         User user = generateUser(UserLogins.LOCKED_OUT_USER.getName(), Users.defaultPass);
         Act(() -> {
-            baseRouter
-                    .authorizationPage().userLogin.fill(user.getLogin())
-                    .authorizationPage().password.fill(user.getPassword())
-                    .authorizationPage().login.click();
+                    authorizationPage().userLogin.fill(user.getLogin());
+                    authorizationPage().password.fill(user.getPassword());
+                    authorizationPage().login.click();
         });
-        baseRouter
-                .mainMenuPage().table.notVisible();
+                mainMenuPage().table.notVisible();
     }
 
     @Test(description = "Logout user")
@@ -46,7 +43,7 @@ public class AuthorizationTest extends BaseTest {
             mainPageSteps().logout();
         });
         Assert(() -> {
-            baseRouter.authorizationPage().container.visible();
+            authorizationPage().container.visible();
         });
     }
 }

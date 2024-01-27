@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.codeborne.selenide.Selenide.open;
 import static data.dataClasses.Users.standardUser;
 import static utils.ApiTools.getAllureInfo;
-import static utils.Tools.getLastAllureUrl;
+import static utils.Tools.getAllureUrl;
 
 public class BaseTest extends BaseRouter {
 
@@ -33,7 +33,6 @@ public class BaseTest extends BaseRouter {
     public static ConcurrentHashMap<ITestResult, List<Runnable>> finishMap = new ConcurrentHashMap<>();
 
 
-    public static BaseRouter baseRouter;
 
     public final static String allureProjectId = "my-project-id";  //Also in send_results.ps1
 
@@ -44,10 +43,6 @@ public class BaseTest extends BaseRouter {
     public final static String pathToRedOnesie = resources + "RedOnesie.jpg";
     public final static String pathToBoltShirt = resources + "BoltShirt.jpg";
     public final static String pathToBikeLight = resources + "BikeLight.jpg";
-
-    public BaseTest() {
-        baseRouter = new BaseRouter();
-    }
 
     @SneakyThrows
     @AfterSuite
@@ -60,8 +55,9 @@ public class BaseTest extends BaseRouter {
             Runtime.getRuntime().exec(cmd);
             try {
                 if (TestProperties.isAllureEnabled()) {
+                    pending(5000);                                //Otherwise, new data does not have
                     AllureResponse response = createAllureProjectIfNotExist();
-                    bot.sendAllureReport(chatId, getLastAllureUrl(response.getData().getProject().getReports()));
+                    bot.sendAllureReport(chatId, getAllureUrl(response.getData().getProject().getReports()));
                 } else {
                     bot.sendAllureReport(chatId);
                 }
@@ -74,12 +70,11 @@ public class BaseTest extends BaseRouter {
 
     private static AllureResponse createAllureProjectIfNotExist(){
         AllureResponse response = getAllureInfo();
-        if (response.getMetaData().getMessage().equals("project_id " + allureProjectId + " not found")){
+        System.out.println(response.getMetaData().getMessage() + " kek");
+        if (response.getMetaData().getMessage().equals("project_id '" + allureProjectId + "' not found")){
             ApiTools.createProject();
-            return getAllureInfo();
-        } else {
-            return response;
         }
+        return response;
     }
 
     @SneakyThrows
@@ -115,19 +110,17 @@ public class BaseTest extends BaseRouter {
 
     @Step("Login")
     protected void login(User user) {
-        baseRouter
-                .authorizationPage().userLogin.fill(user.getLogin())
-                .authorizationPage().password.fill(user.getPassword())
-                .authorizationPage().login.click()
-                .mainMenuPage().table.visible();
+                authorizationPage().userLogin.fill(user.getLogin());
+                authorizationPage().password.fill(user.getPassword());
+                authorizationPage().login.click();
+                mainMenuPage().table.visible();
     }
 
     @Step("Reset data after test")
     protected void resetDataAfterTest() {
         DeleteAll.putOnDeleting(() -> {
-            baseRouter
-                    .mainMenuPage().menuBtn.click()
-                    .mainMenuPage().sidebar.resetData();
+                    mainMenuPage().menuBtn.click();
+                    mainMenuPage().sidebar.resetData();
         });
     }
 
