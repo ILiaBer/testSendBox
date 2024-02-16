@@ -10,6 +10,7 @@ import io.qameta.allure.Step;
 import io.qameta.allure.selenide.AllureSelenide;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.ITestResult;
 import org.testng.Reporter;
@@ -18,6 +19,7 @@ import org.testng.annotations.BeforeMethod;
 import steps.DeleteAll;
 
 import java.io.File;
+import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,10 +31,10 @@ import static utils.Tools.getAllureUrl;
 
 public class BaseTest extends BaseRouter {
 
+    WebDriver driver;
+
     public static final ThreadLocal<ITestResult> testResult = new ThreadLocal<>();
     public static ConcurrentHashMap<ITestResult, List<Runnable>> finishMap = new ConcurrentHashMap<>();
-
-
 
     public final static String allureProjectId = "my-project-id";  //Also in send_results.ps1
 
@@ -95,11 +97,13 @@ public class BaseTest extends BaseRouter {
         if (shouldRunLocally()) {
             System.setProperty("webdriver.chrome.driver", "src/main/java/utils/chromedriver.exe");
         } else {
-            Configuration.remote = "http://localhost:4444/wd/hub";
+//            driver = new RemoteDriver().getRemoteDriver();
+            Configuration.remote = "http://localhost:4445";
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setBrowserName("chrome");
             Configuration.browserCapabilities = capabilities;
         }
+
         open("https://www.saucedemo.com/");
     }
 
