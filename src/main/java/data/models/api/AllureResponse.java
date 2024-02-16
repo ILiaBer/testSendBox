@@ -39,7 +39,6 @@ public class AllureResponse {
         private String[] reportsId;
     }
 
-
     @Data
     @Builder
     @NoArgsConstructor

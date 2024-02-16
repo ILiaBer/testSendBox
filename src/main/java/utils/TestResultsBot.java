@@ -12,11 +12,9 @@ import org.testng.annotations.AfterClass;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static data.models.DataForCustomResults.generateDefaultDataForCustomResults;
 
@@ -30,7 +28,7 @@ public class TestResultsBot extends TelegramLongPollingBot {
         sendMessage.enableMarkdown(true);
         String message = getBriefInfo() + "\n\n[Allure report link](" + allureLink + ")";
         System.out.println(message);
-        message = new String(message.getBytes(), "UTF-8");
+        message = new String(message.getBytes(), StandardCharsets.UTF_8);
         sendMessage.setText(message);
 
         try {
@@ -48,7 +46,7 @@ public class TestResultsBot extends TelegramLongPollingBot {
         sendMessage.enableMarkdown(true);
         String message = getBriefInfo();
         System.out.println(message);
-        message = new String(message.getBytes(), "UTF-8");
+        message = new String(message.getBytes(), StandardCharsets.UTF_8);
         sendMessage.setText(message);
 
         try {
@@ -92,7 +90,7 @@ public class TestResultsBot extends TelegramLongPollingBot {
         int failedTests = 0;
         int skippedTest = 0;
         File[] testResultFiles = reportDirectory.listFiles((dir, name) -> name.endsWith("-result.json"));
-        for (File resultFile : testResultFiles) {
+        for (File resultFile : Objects.requireNonNull(testResultFiles)) {
             try {
                 String jsonContent = Files.readString(resultFile.toPath());
                 TestResult testResult = new Gson().fromJson(jsonContent, TestResult.class);

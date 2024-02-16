@@ -14,12 +14,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.ITestResult;
 import org.testng.Reporter;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import steps.DeleteAll;
 
 import java.io.File;
-import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,7 +52,6 @@ public class BaseTest extends BaseRouter {
     public static void sendNotification() {
         String chatId = "-1001800988927";
         if (TestProperties.isNotificationEnabled()) {
-            finishMethod();
             TestResultsBot bot = new TestResultsBot();
             String[] cmd = {"powershell.exe", "./send_results.ps1"};
             Runtime.getRuntime().exec(cmd);
@@ -63,47 +63,44 @@ public class BaseTest extends BaseRouter {
                 } else {
                     bot.sendAllureReport(chatId);
                 }
-            }
-            catch (NullPointerException e) {
+            } catch (NullPointerException e) {
                 Reporter.log("Something went wrong with allureProjectId" + e.getMessage());
             }
         }
     }
 
-    private static AllureResponse createAllureProjectIfNotExist(){
+    private static AllureResponse createAllureProjectIfNotExist() {
         AllureResponse response = getAllureInfo();
-        System.out.println(response.getMetaData().getMessage() + " kek");
-        if (response.getMetaData().getMessage().equals("project_id '" + allureProjectId + "' not found")){
+        if (response.getMetaData().getMessage().equals("project_id '" + allureProjectId + "' not found")) {
             ApiTools.createProject();
         }
         return response;
     }
 
     @SneakyThrows
+    @BeforeClass
     public static void cleanResults() {
         File allureResults = new File("build/allure-results");
         if (allureResults.exists()) {
             FileUtils.deleteDirectory(allureResults);
         }
+        ApiTools.cleanResults();
     }
 
     @BeforeMethod
     protected void setUp(ITestResult result) {
         SelenideLogger.addListener("allure", new AllureSelenide());
-        cleanResults();
         testResult.set(result);
         finishMap.put(result, new ArrayList<>());
         Configuration.browserSize = "1920x1070";
         if (shouldRunLocally()) {
             System.setProperty("webdriver.chrome.driver", "src/main/java/utils/chromedriver.exe");
         } else {
-//            driver = new RemoteDriver().getRemoteDriver();
-            Configuration.remote = "http://localhost:4445";
+            Configuration.remote = "http://localhost:4444";
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setBrowserName("chrome");
             Configuration.browserCapabilities = capabilities;
         }
-
         open("https://www.saucedemo.com/");
     }
 
@@ -114,17 +111,17 @@ public class BaseTest extends BaseRouter {
 
     @Step("Login")
     protected void login(User user) {
-                authorizationPage().userLogin.fill(user.getLogin());
-                authorizationPage().password.fill(user.getPassword());
-                authorizationPage().login.click();
-                mainMenuPage().table.visible();
+        authorizationPage().userLogin.fill(user.getLogin());
+        authorizationPage().password.fill(user.getPassword());
+        authorizationPage().login.click();
+        mainMenuPage().table.visible();
     }
 
     @Step("Reset data after test")
     protected void resetDataAfterTest() {
         DeleteAll.putOnDeleting(() -> {
-                    mainMenuPage().menuBtn.click();
-                    mainMenuPage().sidebar.resetData();
+            mainMenuPage().menuBtn.click();
+            mainMenuPage().sidebar.resetData();
         });
     }
 
@@ -133,7 +130,7 @@ public class BaseTest extends BaseRouter {
         login(standardUser);
     }
 
-
+    @AfterMethod
     protected static void finishMethod() {
         for (Runnable runnable : Lists.reverse(finishMap.get(testResult.get())))
             runnable.run();

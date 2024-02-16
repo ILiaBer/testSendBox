@@ -18,4 +18,3 @@ fi
 # Останавливаем контейнер
 docker container stop seleniumandtests-selenium-chrome-1
 docker container stop seleniumandtests-selenium-hub-1
-docker container stop seleniumandtests-selenium-node-1

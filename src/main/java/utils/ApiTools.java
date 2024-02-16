@@ -25,9 +25,14 @@ public class ApiTools {
                 .when()
                 .header("Content-Type", "application/json")
                 .body("{\"id\": \"" + allureProjectId + "\"}")
-                .post("/projects")
-                .then()
-                .log().status()
-                .extract().as(AllureResponse.class);
+                .post("/projects");
+    }
+
+    public static void cleanResults() {
+        given(request)
+                .when()
+                .header("Content-Type", "application/json")
+                .queryParams("project_id", allureProjectId)
+                .get("/clean-results");
     }
 }

@@ -13,9 +13,9 @@ public class AuthorizationTest extends BaseTest {
     @Test(description = "User can be registered", dataProviderClass = Users.class, dataProvider = "positiveAuthorization")
     void userCanBeRegistered(BaseTestModel<User> user) {
         Act(() -> {
-                    authorizationPage().userLogin.fill(user.getBaseModel().getLogin());
-                    authorizationPage().password.fill(user.getBaseModel().getPassword());
-                    authorizationPage().login.click();
+            authorizationPage().userLogin.fill(user.getBaseModel().getLogin());
+            authorizationPage().password.fill(user.getBaseModel().getPassword());
+            authorizationPage().login.click();
         });
         Assert(() -> {
             mainMenuPage().table.visible();
@@ -27,11 +27,11 @@ public class AuthorizationTest extends BaseTest {
         User user = generateUser(UserLogins.LOCKED_OUT_USER.getName(), Users.defaultPass);
         Act(() -> {
 
-                    authorizationPage().userLogin.fill(user.getLogin());
-                    authorizationPage().password.fill(user.getPassword());
-                    authorizationPage().login.click();
+            authorizationPage().userLogin.fill(user.getLogin());
+            authorizationPage().password.fill(user.getPassword());
+            authorizationPage().login.click();
         });
-                mainMenuPage().table.notVisible();
+        mainMenuPage().table.notVisible();
     }
 
     @Test(description = "Logout user")
