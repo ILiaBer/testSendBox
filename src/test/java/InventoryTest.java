@@ -31,14 +31,16 @@ public class InventoryTest extends BaseTest {
 
     @Test(description = "Item has info")
     void itemHasInfo() {
+        SoftAssert softAssert = new SoftAssert();
         InventoryItem item = (InventoryItem) Tools.getRandomClassObj(InventoryItems.class);
         Arrange(this::login);
         Assert(() -> {
-            mainMenuPage().inventoryItem.checkHeader(item)
-                    .mainMenuPage().inventoryItem.checkDescriptionByHeader(item)
-                    .mainMenuPage().inventoryItem.checkPriceByHeader(item)
-                    .mainMenuPage().inventoryItem.checkAttachment(item);
+            mainMenuPage().inventoryItem.checkHeader(item, softAssert)
+                    .mainMenuPage().inventoryItem.checkDescriptionByHeader(item, softAssert)
+                    .mainMenuPage().inventoryItem.checkPriceByHeader(item, softAssert)
+                    .mainMenuPage().inventoryItem.checkAttachment(item, softAssert);
         });
+        softAssert.assertAll();
     }
 
     @Test(description = "Item can be ordered")
@@ -137,15 +139,15 @@ public class InventoryTest extends BaseTest {
             cardPage().firstName.fill(customer.getFirstName())
                     .cardPage().lastName.fill(customer.getLastName())
                     .cardPage().continueBtn.click();
-            softAssert.assertTrue(cardPage().error.isVisible());
+            cardPage().error.isVisible(softAssert);
             cardPage().postalCode.fill(customer.getPostalCode())
                     .cardPage().lastName.clearAll()
                     .cardPage().continueBtn.click();
-            softAssert.assertTrue(cardPage().error.isVisible());
+            cardPage().error.isVisible(softAssert);
             cardPage().lastName.fill(customer.getLastName())
                     .cardPage().firstName.clearAll()
                     .cardPage().continueBtn.click();
-            softAssert.assertTrue(cardPage().error.isVisible());
+            cardPage().error.isVisible(softAssert);
         });
         Assert(softAssert::assertAll);
     }

@@ -3,6 +3,7 @@ package widgets;
 import com.codeborne.selenide.Condition;
 import lombok.AllArgsConstructor;
 import org.openqa.selenium.By;
+import org.testng.asserts.SoftAssert;
 import utils.BaseRouter;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -16,8 +17,14 @@ public class Label extends BaseRouter {
         return this;
     }
 
-    public boolean isVisible() {
-        return $(locator).is(Condition.visible);
+    public BaseRouter isVisible() {
+        $(locator).shouldBe(Condition.visible);
+        return this;
+    }
+
+    public BaseRouter isVisible(SoftAssert softAssert) {
+        softAssert.assertTrue($(locator).is(Condition.visible));
+        return this;
     }
 
     public BaseRouter checkText(String text){

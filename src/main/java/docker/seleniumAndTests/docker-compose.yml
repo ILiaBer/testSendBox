@@ -5,15 +5,4 @@ services:
     ports:
       - "4444:4444"
       - "5051:5050"
-    environment:
-      - HUB_PORT_4444_TCP_ADDR=selenium-hub
-      - HUB_PORT_4444_TCP_PORT=4444
-    depends_on:
-      - selenium-hub
-    restart: unless-stopped
-
-  selenium-hub:
-    image: selenium/hub:latest
-    ports:
-      - "4445:4444"
     restart: unless-stopped

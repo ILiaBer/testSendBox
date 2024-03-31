@@ -10,7 +10,6 @@ import io.qameta.allure.Step;
 import io.qameta.allure.selenide.AllureSelenide;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.ITestResult;
 import org.testng.Reporter;
@@ -31,8 +30,6 @@ import static utils.ApiTools.getAllureInfo;
 import static utils.Tools.getAllureUrl;
 
 public class BaseTest extends BaseRouter {
-
-    WebDriver driver;
 
     public static final ThreadLocal<ITestResult> testResult = new ThreadLocal<>();
     public static ConcurrentHashMap<ITestResult, List<Runnable>> finishMap = new ConcurrentHashMap<>();
@@ -84,7 +81,9 @@ public class BaseTest extends BaseRouter {
         if (allureResults.exists()) {
             FileUtils.deleteDirectory(allureResults);
         }
-        ApiTools.cleanResults();
+        if (TestProperties.isAllureEnabled()) {
+            ApiTools.cleanResults();
+        }
     }
 
     @BeforeMethod
