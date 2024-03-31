@@ -10,6 +10,7 @@ import io.qameta.allure.Step;
 import io.qameta.allure.selenide.AllureSelenide;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.ITestResult;
 import org.testng.Reporter;
@@ -84,23 +85,34 @@ public class BaseTest extends BaseRouter {
         if (TestProperties.isAllureEnabled()) {
             ApiTools.cleanResults();
         }
-    }
-
-    @BeforeMethod
+    }@BeforeMethod
     protected void setUp(ITestResult result) {
         SelenideLogger.addListener("allure", new AllureSelenide());
         testResult.set(result);
         finishMap.put(result, new ArrayList<>());
         Configuration.browserSize = "1920x1070";
+
+        ChromeOptions chromeOptions = createChromeOptions();
+
         if (shouldRunLocally()) {
             System.setProperty("webdriver.chrome.driver", "src/main/java/utils/chromedriver.exe");
+            Configuration.browserCapabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
         } else {
             Configuration.remote = "http://localhost:4444";
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setBrowserName("chrome");
+            capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
             Configuration.browserCapabilities = capabilities;
         }
+
         open("https://www.saucedemo.com/");
+    }
+
+    private ChromeOptions createChromeOptions() {
+        ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--disable-infobars");
+        chromeOptions.addArguments("--disable-extensions");
+        return chromeOptions;
     }
 
     private static boolean shouldRunLocally() {
